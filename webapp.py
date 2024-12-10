@@ -1,4 +1,6 @@
 import streamlit as st
+from streamlit import session_state
+
 import functions
 
 todos = functions.get_todos()
@@ -17,7 +19,12 @@ st.write("This up is to increase your productivity")
 
 
 for index, todo in enumerate(todos):
-    st.checkbox(todo, key=f"todo_{index}")
+    checkbox=st.checkbox(todo, key=todo)
+    if checkbox:
+        todos.pop(index)
+        functions.write_todos(todos)
+        del st.session_state[todo]
+        st.rerun()
 
 st.text_input(label="Enter a todo", label_visibility='hidden',
               placeholder="Add new todo....",
